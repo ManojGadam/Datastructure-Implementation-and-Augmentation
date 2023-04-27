@@ -10,12 +10,7 @@ python -u MyMainV2.py
 where MyMainV2 is the filename
 This is for printing the height
 
-
-##Contributions
-ManojGadamchetty - Splaytree,SkipList,HashTable,Height Augmentation
-Venkata Trinada Avinash Varma Alluri - BinarySearchTree,RedBlackTree, MyMainV1,MyMainV2
-
-
+##Benchmarks
 The resultant benchmarks for data in test.txt are 
 
 HashTable - 0.0030012130737304688
