@@ -1,0 +1,180 @@
+class Node:
+    def __init__(self,key):
+        self.key = key
+        self.left = None
+        self.right = None
+        self.parent = None
+        self.height = 0
+
+class BST():
+    def __init__(self):
+        self.root = None
+        self.height = 0 
+             
+    def left_rotate(self,x):
+         y = x.right
+         x.right = y.left
+         if y.left != None:
+            y.left.parent = x
+         y.parent = x.parent
+         if x.parent == None:
+            self.root = y   
+         elif x == x.parent.left:
+             x.parent.left = y
+         elif x == x.parent.right:
+            x.parent.right = y
+         y.left = x          
+         x.parent = y
+         self.heightCheck(x)
+     
+    def right_rotate(self,x):
+        y = x.left
+        x.left = y.right
+        if y.right != None:
+            y.right.parent = x 
+        y.parent = x.parent
+        if x.parent == None:
+            self.root = y
+        elif x == x.parent.left:
+              x.parent.left = y
+        elif  x== x.parent.right:
+              x.parent.right = y
+        y.right = x      
+        x.parent = y
+        self.heightCheck(x)
+                        
+    def insert(self,key,case):
+        node = Node(key)
+        current = self.search(node)
+        if current == None:
+            self.root = node
+        elif current.key == node.key:
+               return                     
+        elif node.key<current.key:
+            current.left = node
+        else:
+            current.right = node
+        node.parent = current
+        node.height = 1
+        self.adjustHeight(node)
+        if(case==True):
+            print(self.root.height)   
+    def search(self,node):
+        root = self.root
+        current = None
+        while root!=None:
+            current = root
+            if  node.key<current.key :
+                root = root.left
+            elif node.key == current.key:
+                break    
+            else:
+                root = root.right
+        return current        
+    def adjustHeight(self,node):
+        current = node.parent
+        if current == None:
+            self.heightSafe(self.root)
+        while current != None:
+            if current.left == None and current.right == None:
+                current.height = 1 
+            elif current.left == None:
+                current.height = current.right.height+1
+            elif current.right == None:
+                current.height = current.left.height+1 
+            else:                      
+                current.height = max(current.left.height,current.right.height)+1
+            current = current.parent    
+    
+    def inOrderTraversal(self,node):
+        if node == None:
+            return
+        self.inOrderTraversal(node.left)
+        print(node.key,end=' ')
+        self.inOrderTraversal(node.right)
+        
+    def delete(self,x,case):
+        x = Node(x)
+        root = self.root
+        node = None
+        current = None
+        t = 0
+        while(root!=None):
+            current = root
+            if current.key == x.key:
+                node = current
+                break
+            elif x.key<current.key:
+                root = root.left
+            else:
+                root = root.right
+        if node == None:
+            return -1
+        elif node.left == None:
+            self.transplant(node,node.right)
+        elif node.right == None:
+            self.transplant(node,node.left)
+        else:
+            successor = self.treeMinimum(node.right)
+            if successor != node.right:
+                self.transplant(successor, successor.right)
+                successor.right = node.right
+                successor.right.parent = successor
+            self.transplant(node,successor)    
+            successor.left = node.left
+            successor.left.parent  = successor
+            self.adjustHeight(successor)
+            root = self.root
+        if(case==True):
+            print(self.root.height)      
+    def transplant(self,u,v):
+        if u.parent == None:
+            self.root = v
+        elif u == u.parent.left:
+            u.parent.left = v
+        else:
+            u.parent.right = v
+        if v!=None:
+            v.parent = u.parent
+            self.adjustHeight(v)
+        else:
+            self.adjustHeight(u.parent)        
+    def treeMinimum(self,x):
+        while x.left !=None:
+            x = x.left
+        return x            
+
+    def heightSafe(self,current):
+        if current.left == None and current.right == None:
+                current.height = 1 
+        elif current.left == None:
+                current.height = current.right.height+1
+        elif current.right == None:
+                current.height = current.left.height+1 
+        else:                      
+            current.height = max(current.left.height,current.right.height)+1 
+
+    def heightCheck(self,current):
+        while current!=None:
+            if current.left == None and current.right == None:
+                    current.height = 1 
+            elif current.left == None:
+                    current.height = current.right.height+1
+            elif current.right == None:
+                    current.height = current.left.height+1 
+            else:                      
+                current.height = max(current.left.height,current.right.height)+1 
+            current = current.parent   
+if __name__=="__main__" :         
+    tree = BST()
+    tree.insert(15,True)             
+    tree.insert(10,True)             
+    tree.insert(17,True)  
+    tree.insert(7,True)             
+    tree.insert(13,True)             
+    tree.insert(16,True)            
+    tree.delete(15,True)             
+    tree.delete(13,True)             
+    tree.delete(10,True)             
+    tree.delete(16,True)
+    tree.delete(17,True)
